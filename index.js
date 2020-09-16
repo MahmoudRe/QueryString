@@ -1,23 +1,26 @@
 /**
- * @version 2.5
+ * @version 2.6
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
- * 
  */
 
 export default class QueryString {
 
     /**
      * By default, this constructor takes no parameters and set its queryString directly from URL.
-     * Optionally, a custom queryString can be given als parameter.
-     * @param {String} queryString  if not given, the query string of current URL will be used (without the hash)
-     * @param {bool}   autoUpdate   update the current window's URL after each modification, default true unless customQueryString is given.
+     * Optionally, a custom queryString and hash can be given als parameter.
+     * @param {String} queryString  Custom query string to be used. Default is the query string of current URL will be used (without the hash)
+     * @param {String} hash         Custom hash. Default is the hash of current URL will be used
+     * @param {bool}   autoUpdate   update the current window's URL after each modification. This set to true by default
      */
-    constructor(queryString = this.getWindowQueryString(), autoUpdate = true) {
+    constructor({ queryString, hash, autoUpdate }) {
 
         // attr
-        this.queryString = queryString;
+        this.queryString = queryString ? queryString : this.getWindowQueryString();
+        this.autoUpdate = autoUpdate ? autoUpdate : true;
         this.hash = window.location.hash;
-        this.autoUpdate = autoUpdate;
+
+        if (hash) this.setHash(hash);
+        this.autoUpdate && this.set(queryString);
 
         // Bind all class' functions to "this"
         const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -299,13 +302,9 @@ export default class QueryString {
     // -------------------- [Get/Set Hash] -------------------- //
     /**
      * Shorthand functions to get the hash part of URL.
-     * 
-     * If fetch param set to false, this function return 'this.hash' 
-     * without updating it from current windows.
-     * @param {bool} fetch Fetch the hash from current windows to this.hash before return (default = true).
      */
-    getHash(fetch = true) {
-        if (fetch) this.hash = window.location.hash;
+    getHash() {
+        if (this.autoUpdate) this.hash = window.location.hash;
         return this.hash;
     }
     setHash(hash) {
