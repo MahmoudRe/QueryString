@@ -1,9 +1,11 @@
 # Query String Modifier
-It is an easy and a robust way for manipulating / modifying a query string. The `QueryString` class has a set of operation modifies the local query string, with the option to sync it with the current window's query string on the browser. Operations like get, set, update param given its key; get all values of param-list; get sorted date list; and change the hash.
+Query String Modifier is an easy and a robust way for manipulating / modifying a query string. The exposed `QueryString` class has a set of functions that modifies its local "query" string attribute, `this.queryString`, which is synced with the current window's query string by default, unless specified otherwise.
 
 ## Installation
 
-`npm i -save query-string-modifier`
+```
+npm i -save query-string-modifier
+```
 
 Then..
 ```js
@@ -14,7 +16,7 @@ const qs = new QueryString();
 
 // Then Use it.. :)
 qs.appendParam("someKey", "someValue");
-qs.get("someKey");    
+let value = qs.get("someKey");   
 ...
 ```
 
@@ -41,6 +43,10 @@ You can also change all of these configuration after initialization with getter 
 
 
 ## Changes history
+#### v2.6.2
+- Fix bug in the default value of the constructor
+- `this.hash` doesn't start with `#` anymore, all hash functions get/set/delete are adjusted accordingly.
+
 #### v2.6
 - Change constructor to take object as parameter instead of passing one-by-one value. Check options example.
 - getHash() will fetch current windows hash before return if autoUpdate option is set to true.
