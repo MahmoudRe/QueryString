@@ -8,7 +8,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/MahmoudRe/query-string-modifier.git"
+        "url": "git+https://github.com/schuttelaar/query-string-modifier"
     },
     "keywords": [
         "query",
