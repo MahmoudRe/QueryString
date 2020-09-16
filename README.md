@@ -1,5 +1,5 @@
 # Query String Modifier
-QueryString modifier is an easy and robust way for manipulating the URL query string. It collect a set of operation into one class that modifies internal query string, with the option to sync it with the current window query string if you run it on browser. Operations like get, set, update param given its key; get all values of param-list; get sorted date list; and change the hash.
+It is an easy and a robust way for manipulating / modifying a query string. The `QueryString` class has a set of operation modifies the local query string, with the option to sync it with the current window's query string on the browser. Operations like get, set, update param given its key; get all values of param-list; get sorted date list; and change the hash.
 
 ## Installation
 
