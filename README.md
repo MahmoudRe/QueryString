@@ -43,8 +43,9 @@ You can also change all of these configuration after initialization with getter 
 
 
 ## Changes history
-#### v2.6.2
+#### v2.6.3
 - Fix bug in the default value of the constructor
+- Fix/Enhance matching for key and value with regards to prior/next `&` char. The previous matching causes removeKey to delete both `&` if the param exists in the middle
 - `this.hash` doesn't start with `#` anymore, all hash functions get/set/delete are adjusted accordingly.
 
 #### v2.6
