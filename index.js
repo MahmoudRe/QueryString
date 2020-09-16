@@ -169,7 +169,7 @@ export default class QueryString {
         if (!key) return this.queryString;
         if (!value && value !== 0) return this.removeKey(key);
 
-        var regex = new RegExp(`(&|^)?(${key}=.*?)($|&)`, 'g');
+        var regex = new RegExp(`(${key}=.*?)($|&)`, 'g');
 
         if (this.queryString.match(regex)) {
             // key is existed, so update the value
@@ -221,7 +221,7 @@ export default class QueryString {
         }
 
         //NOTE: URLSearchParams() is an option but it is not compatible with IE, so I didn't use it.
-        var regex = new RegExp(`(&)?(${key}=${value})`, `g`);
+        var regex = new RegExp(`(${key}=${value})($|&)`, `g`);
         this.queryString = this.queryString.replace(regex, ``);
         this.queryString = this.queryString.replace(/^[&]*/, ``);
 
@@ -249,7 +249,7 @@ export default class QueryString {
         if (!noEscape)
             key = escapeRegExp(key);
 
-        var regex = new RegExp(`(&)?(${key}=.*?)($|&)`, `g`);
+        var regex = new RegExp(`(${key}=.*?)($|&)`, `g`);
         this.queryString = this.queryString.replace(regex, ``);
         this.queryString = this.queryString.replace(/^[&]*/, ``);
 
@@ -282,7 +282,7 @@ export default class QueryString {
         //if there the value is not set, then remove all parameters matches the given key
         if (!value && value !== 0) value = '[^&]*';
 
-        let regex = new RegExp(`(&)?(${key}=${value})`, `g`);
+        let regex = new RegExp(`(${key}=${value})`, `g`);
         return this.queryString.match(regex);
     }
 
