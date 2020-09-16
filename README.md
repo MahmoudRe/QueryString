@@ -7,7 +7,7 @@ It is an easy and a robust way for manipulating / modifying a query string. The 
 
 Then..
 ```js
-import qs from 'query-string-modifier';
+import QueryString from 'query-string-modifier';
 
 // Initialize QueryString obj with default behavior
 const qs = new QueryString(); 
