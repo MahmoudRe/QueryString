@@ -1,6 +1,6 @@
 {
     "name": "query-string-modifier",
-    "version": "2.6.0",
+    "version": "2.6.1",
     "description": "QueryString module is an easy and robust way for manipulating the URL query string, like get/set/update param, get all values of param-list, change the hash, and more other handy functionalities.",
     "main": "index.js",
     "scripts": {
