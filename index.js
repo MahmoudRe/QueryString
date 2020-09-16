@@ -1,5 +1,5 @@
 /**
- * @version 2.6
+ * @version 2.6.2
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -12,15 +12,15 @@ export default class QueryString {
      * @param {String} hash         Custom hash. Default is the hash of current URL will be used
      * @param {bool}   autoUpdate   update the current window's URL after each modification. This set to true by default
      */
-    constructor({ queryString, hash, autoUpdate }) {
+    constructor({ queryString, hash, autoUpdate } = {}) {
 
         // attr
         this.queryString = queryString ? queryString : this.getWindowQueryString();
         this.autoUpdate = autoUpdate ? autoUpdate : true;
-        this.hash = window.location.hash;
+        this.hash = window.location.hash.substr(1);
 
         if (hash) this.setHash(hash);
-        this.autoUpdate && this.set(queryString);
+        this.autoUpdate && queryString && this.set(queryString);
 
         // Bind all class' functions to "this"
         const methods = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -59,7 +59,7 @@ export default class QueryString {
      */
     getWindowQueryString() {
         this.queryString = window.location.search.substr(1);
-        this.hash = window.location.hash;
+        this.hash = window.location.hash.substr(1);
         return this.queryString;
     }
 
@@ -71,7 +71,8 @@ export default class QueryString {
         let urlParts = url.split('?');
 
         if (urlParts.length > 0) {
-            let updatedURL = urlParts[0] + '?' + this.queryString + this.hash;
+            let urlHash = this.hash ? "#" + this.hash : "";
+            let updatedURL = urlParts[0] + '?' + this.queryString + urlHash;
             window.history.replaceState({}, document.title, updatedURL);
             return true;
         } else {
@@ -304,14 +305,14 @@ export default class QueryString {
      * Shorthand functions to get the hash part of URL.
      */
     getHash() {
-        if (this.autoUpdate) this.hash = window.location.hash;
+        if (this.autoUpdate) this.hash = window.location.hash.substr(1);
         return this.hash;
     }
     setHash(hash) {
         if (!hash && hash !== 0)
             this.hash = '';
-        else if (("" + hash).charAt(0) !== '#')
-            this.hash = "#" + hash;
+        else if (("" + hash).charAt(0) === '#')
+            this.hash = hash.substr(1);
         else
             this.hash = hash;
 
