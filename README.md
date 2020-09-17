@@ -43,16 +43,21 @@ You can also change all of these configuration after initialization with getter 
 
 
 ## Changes history
+#### v2.6.4
+- Add `hashKey()` function which is an alies to `hasParam()` with 2nd argument 'value' set to false; given a key, it checks if the string has any param with that key. The second argument is the option `noEscape`, set this to true in case the key is a regex value.
+- Improve matching in `hasParam()` to strictly match the key and value, so it won't return `true` in such case the value is partially matched.
+    - _Example:_ given query string `...&key=value&...`, now `hasParam("key", "val")` will return `false`.
+    
 #### v2.6.3
 - Fix bug in the default value of the constructor
 - Fix/Enhance matching for key and value with regards to prior/next `&` char. The previous matching causes removeKey to delete both `&` if the param exists in the middle
 - `this.hash` doesn't start with `#` anymore, all hash functions get/set/delete are adjusted accordingly.
 
-#### v2.6
+#### v2.6.0
 - Change constructor to take object as parameter instead of passing one-by-one value. Check options example.
 - getHash() will fetch current windows hash before return if autoUpdate option is set to true.
 
-#### v2.5
+#### v2.5.0
 - getAllParams to return an object with all `{ key: value }` pairs. Also support key with list of values, as long the key name end with `[]`
 - Decode uri params of the query string when performing operation require key lookup like get, set, delete.. etc. So, no need to worry if the query string is encoded.
 - Aliases:
@@ -60,32 +65,32 @@ You can also change all of these configuration after initialization with getter 
     - getAllValues = getAllParamValues
     - getValues = getAllParamValues
 
-#### v2.4 
+#### v2.4.0 
 - [Fix] Bind all class' methods to "this" in constructor
 
-#### v2.3 
+#### v2.3.0 
 - get/set/removeHash
 - Aliases:
     - setParam = updateParam
     - deleteParam = removeParam
     - deleteKey = removeKey
 
-#### v2.2 
+#### v2.2.0 
 - Back to ES6 syntax
 - togglePram, hasParam and removeKey functions
 - updateParam will remove the key if value is falsy
 - Simplify constructor
 - Typos
 
-#### v2.1 
+#### v2.1.0 
 - General enhancments
 
-#### v2.0 
+#### v2.0.0 
 - Refactor all functions to one QueryString class.
 - The class has attribute `this.queryString`, where all class' functions manipulate it, instead of the windows query string directly.
 - Auto sync `this.queryString` with window query string, unless `autoUpdate` is false, which can be set through constructor or later with `setAutoUpdate()` function.
 
-#### v1.0
+#### v1.0.0
 - Utilities functions inside `uri-params.js` file that operate on windows query string by default:
     - updateQueryParams(params)
     - getQueryParams(key)
