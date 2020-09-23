@@ -1,5 +1,5 @@
 /**
- * @version 2.6.2
+ * @version 2.6.4
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -208,11 +208,11 @@ export default class QueryString {
      * If value isn't given 
      * @param {String} key
      * @param {String} value (optional)
-     * @param {Bool} removeOnlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
      * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
      * @return {String} this.queryString after modification
      */
-    removeParam(key, value, removeOnlyFirstOccurrence = false, noEscape = false) {
+    removeParam(key, value, onlyFirstOccurrence, noEscape) {
         if (!key) return this.queryString;
         if (!value && value !== 0) return this.removeKey(key);
         if (!noEscape) {
@@ -225,7 +225,7 @@ export default class QueryString {
         this.queryString = this.queryString.replace(regex, ``);
         this.queryString = this.queryString.replace(/^[&]*/, ``);
 
-        if (this.queryString.match(regex) && !removeOnlyFirstOccurrence)
+        if (this.queryString.match(regex) && !onlyFirstOccurrence)
             return this.removeParam(key);
 
         if (this.autoUpdate)
@@ -233,27 +233,27 @@ export default class QueryString {
 
         return this.queryString;
     }
-    deleteParam(key, value, removeOnlyFirstOccurrence = false, noEscape = false) {
-        this.removeParam(key, value, removeOnlyFirstOccurrence, noEscape);
+    deleteParam(key, value, onlyFirstOccurrence, noEscape) {
+        this.removeParam(key, value, onlyFirstOccurrence, noEscape);
     }
 
     /**
      * Remove any parameter with the given key from "this.queryString".
      * @param {String} key
-     * @param {Bool} removeOnlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence if the given key
      * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
      * @return {String} this.queryString after modification
      */
-    removeKey(key, removeOnlyFirstOccurrence = false, noEscape = false) {
+    removeKey(key, onlyFirstOccurrence, noEscape) {
         if (!key) return this.queryString;
         if (!noEscape)
             key = escapeRegExp(key);
 
-        var regex = new RegExp(`(&)?(${key}=.*?)($|&)`, `g`);
+        var regex = new RegExp(`(&)?(${key}=[^&]*)`, `g`);
         this.queryString = this.queryString.replace(regex, ``);
         this.queryString = this.queryString.replace(/^[&]*/, ``);
 
-        if (this.queryString.match(regex) && !removeOnlyFirstOccurrence)
+        if (this.queryString.match(regex) && !onlyFirstOccurrence)
             return this.removeKey(key);
 
         if (this.autoUpdate)
@@ -261,8 +261,8 @@ export default class QueryString {
 
         return this.queryString;
     }
-    deleteKey(key, removeOnlyFirstOccurrence = false, noEscape = false) {
-        this.removeKey(key, removeOnlyFirstOccurrence, noEscape);
+    deleteKey(key, onlyFirstOccurrence, noEscape) {
+        this.removeKey(key, onlyFirstOccurrence, noEscape);
     }
 
     /**
@@ -273,18 +273,19 @@ export default class QueryString {
      * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
      * @returns {bool} bool wether this.queryString has the given paramter
      */
-    hasParam(key, value, noEscape = false) {
+    hasParam(key, value, noEscape) {
         if (!key) return false;
         if (!noEscape) {
             key = escapeRegExp(key);
             if (value) value = escapeRegExp(value);
         }
-        //if there the value is not set, then remove all parameters matches the given key
+        //if there the value is not set, then match all parameters with the given key
         if (!value && value !== 0) value = '[^&]*';
 
-        let regex = new RegExp(`(&)?(${key}=${value})`, `g`);
+        let regex = new RegExp(`(&)?(${key}=${value})($|&)`, `g`);
         return this.queryString.match(regex);
     }
+    hasKey(key, noEscape) { this.hasParam(key, false, noEscape); }
 
     /**
      * Append/Remove the given paramter from "this.queryString".
