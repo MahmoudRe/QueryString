@@ -1,3 +1,9 @@
+[![npm](https://img.shields.io/npm/v/query-string-modifier)](https://www.npmjs.com/package/query-string-modifier)
+![npm bundle size](https://img.shields.io/bundlephobia/min/query-string-modifier?color=green)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/query-string-modifier?color=green)
+![npm](https://img.shields.io/npm/dm/query-string-modifier?color=yellow)
+![NPM](https://img.shields.io/npm/l/query-string-modifier)
+
 # Query String Modifier
 Query String Modifier is an easy and a robust way for manipulating / modifying a query string. The exposed `QueryString` class has a set of functions that modifies its local "query" string attribute, `this.queryString`, which is synced with the current window's query string by default, unless specified otherwise.
 
