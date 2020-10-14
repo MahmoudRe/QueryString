@@ -333,5 +333,5 @@ export default class QueryString {
  * @return {String} escaped string that ready to be used in regex expressions.
  */
 function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    return (str + "").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
