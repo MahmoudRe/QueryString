@@ -1,6 +1,6 @@
 {
     "name": "query-string-modifier",
-    "version": "2.6.5",
+    "version": "2.7.1",
     "description": "A robust way for manipulating the URL query string!",
     "main": "index.js",
     "repository": "schuttelaar/query-string-modifier",
@@ -17,6 +17,9 @@
         "modifier",
         "query-string",
         "query-string-modifier"
+    ],
+    "files": [
+        "index.js"
     ],
     "author": "Mahmoud Al-Refaai",
     "license": "MIT"

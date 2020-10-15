@@ -1,16 +1,16 @@
 /**
- * @version 2.6.5
+ * @version 2.7.1
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
 export default class QueryString {
 
     /**
-     * By default, this constructor takes no parameters and set its queryString directly from URL.
+     * By default, this constructor takes no parameters and set its queryString directly from URI.
      * Optionally, a custom queryString and hash can be given als parameter.
-     * @param {String} queryString  Custom query string to be used. Default is the query string of current URL will be used (without the hash)
-     * @param {String} hash         Custom hash. Default is the hash of current URL will be used
-     * @param {bool}   autoUpdate   update the current window's URL after each modification. This set to true by default
+     * @param {String} queryString  Custom query string to be used. Default is the query string of current URI will be used (without the hash)
+     * @param {String} hash         Custom hash. Default is the hash of current URI will be used
+     * @param {boolean}   autoUpdate   update the current window's URI after each modification. This set to true by default
      */
     constructor({ queryString, hash, autoUpdate } = {}) {
 
@@ -39,22 +39,30 @@ export default class QueryString {
         if (key) return this.getParamValue(key);
         return this.queryString;
     }
-    set(queryString) {
-        this.queryString = queryString;
+    set(string, value) {
+        if (value !== undefined)
+            return this.updateParam(string, value);
+
+        else if ((string + '').charAt(0) === '?')
+            this.queryString = string.substr(1);
+
+        else
+            this.queryString = string;
+
         if (this.autoUpdate) this.updateQueryString();
     }
     getAutoUpdate() {
         return this.autoUpdate;
     }
-    setAutoUpdate(bool) {
-        this.autoUpdate = bool;
+    setAutoUpdate(boolean) {
+        this.autoUpdate = boolean;
     }
 
     // --------------- [QueryString functions] --------------- //
 
     /**
-     * Get the whole string after "?" from the current window's URL, 
-     * update "this.queryString" and return it.
+     * Get the query string part of the current window's URI.
+     * This will update "this.queryString" and "this.hash".
      * @return {String} the query string
      */
     getWindowQueryString() {
@@ -64,7 +72,8 @@ export default class QueryString {
     }
 
     /**
-     * Update the current window's URL with "this.queryString"
+     * Force update the current window's URI using
+     * "this.queryString" and "this.hash" of this instance.
      */
     updateQueryString() {
         let url = window.location.href;
@@ -79,11 +88,13 @@ export default class QueryString {
             return false;
         }
     }
+    updateWindowQueryString() { this.updateQueryString(); }
 
     // ---------------[Param functions]--------------- //
     /**
-     * Get all parameters as object where { key: value } for single value params , 
-     * and { key[]: [values_array] } for list parameters (ie. key name end with [])
+     * Get all parameters as an object where:
+     *  - { key: value } for single value params,
+     *  - { key[]: [values_array] } for list parameters (ie. key name end with [])
      * @return {Object} Object with all parameter of this queryString
      */
     getAllParams() {
@@ -103,9 +114,9 @@ export default class QueryString {
     }
 
     /**
-     * get the first value of the given parameter's key.
+     * Get the first value of the parameter with the given key.
      * @param {String} key the parameter's key to look for.
-     * @return {String} if getAll set to false, return the first value of the given key.
+     * @return {String} the first value of the parameter.
      */
     getParamValue(key) {
         let paramList = this.queryString.split('&');
@@ -122,7 +133,7 @@ export default class QueryString {
     /**
      * Get a list of all values that corresponds to the given parameter's key.
      * @param {String} key the parameter's key to look for.
-     * @return {Array} if getAll set to true, return list of all values of the given key.
+     * @return {Array} list of all values of the given key.
      */
     getAllParamValues(key) {
         let paramList = this.queryString.split('&');
@@ -140,10 +151,9 @@ export default class QueryString {
     getValues(key) { return this.getAllParamValues(key); }
 
     /**
-     * Get list of all dates from "this.queryString". The dates paramter should be like: [ dateParamKey=VALUE ].
-     * The resulted list is ASC sorted.
+     * Get sorted array in ascending order of all dates from "this.queryString".
      * @param {String} dateParamKey the parameter's key of the dates (default => "dates[]").
-     * @return {Array} array of date-strings
+     * @return {Array} sorted array of date-strings
      */
     getDateList(dateParamKey = 'dates[]') {
         let dateList = this.getAllParamValues(dateParamKey);
@@ -205,11 +215,11 @@ export default class QueryString {
 
     /**
      * Remove the given query parameter [ KEY=VALUE ] from "this.queryString".
-     * If value isn't given 
+     * If value isn't given, remove all parameters wut the given key.
      * @param {String} key
      * @param {String} value (optional)
-     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
+     * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
      * @return {String} this.queryString after modification
      */
     removeParam(key, value, onlyFirstOccurrence, noEscape) {
@@ -240,8 +250,8 @@ export default class QueryString {
     /**
      * Remove any parameter with the given key from "this.queryString".
      * @param {String} key
-     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence if the given key
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
+     * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
      * @return {String} this.queryString after modification
      */
     removeKey(key, onlyFirstOccurrence, noEscape) {
@@ -266,12 +276,13 @@ export default class QueryString {
     }
 
     /**
-     * Check whether this.queryString has the given paramter [ key=value ].
+     * Check whether this.queryString has the given parameter [ key=value ].
      * If the value is not set, then check whether any parameter has the given key.
-     * @param {String} key 
-     * @param {String} value (optional attribute) 
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key or if key/value strings are already escaped
-     * @returns {bool} bool wether this.queryString has the given paramter
+     *
+     * @param {String} key
+     * @param {String} value (optional)
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+     * @returns {boolean} boolean wether this.queryString has the given parameter
      */
     hasParam(key, value, noEscape) {
         if (!key) return false;
@@ -288,10 +299,12 @@ export default class QueryString {
     hasKey(key, noEscape) { this.hasParam(key, false, noEscape); }
 
     /**
-     * Append/Remove the given paramter from "this.queryString".
-     * @param {String} key 
+     * Append/Remove the given parameter from "this.queryString".
+     * If "autoUpdate" is true, it will update window URI.
+     * 
+     * @param {String} key
      * @param {String} value
-     * @return {String} this.queryString after modification 
+     * @return {String} this.queryString after modification
      */
     toggleParam(key, value) {
         if (this.hasParam(key, value)) {
@@ -303,12 +316,21 @@ export default class QueryString {
 
     // -------------------- [Get/Set Hash] -------------------- //
     /**
-     * Shorthand functions to get the hash part of URL.
+     * Get the hash part of URI.
+     * If "autoUpdate" is true, it will update "this.hash" attribute of qs instance.
+     * @return {String}
      */
     getHash() {
         if (this.autoUpdate) this.hash = window.location.hash.substr(1);
         return this.hash;
     }
+
+    /**
+     * Set "the.hash" of qs instance to the given hash.
+     * It ignores the '#' char at the the start, so no need to include it.
+     * If given hash is falsy (but not 0), it will remove the hash part.
+     * If "autoUpdate" is true, it will update window URI.
+     */
     setHash(hash) {
         if (!hash && hash !== 0)
             this.hash = '';
@@ -320,7 +342,17 @@ export default class QueryString {
         if (this.autoUpdate)
             this.updateQueryString();
     }
+
+    /**
+     * Remove the value of "this.hash" of qs instance.
+     * If "autoUpdate" is true, it will update window URI.
+     */
     removeHash() { this.setHash(''); }
+
+    /**
+     * Remove the value of "this.hash" of qs instance.
+     * If "autoUpdate" is true, it will update window URI.
+     */
     deleteHash() { this.setHash(''); }
 
 }
@@ -333,5 +365,5 @@ export default class QueryString {
  * @return {String} escaped string that ready to be used in regex expressions.
  */
 function escapeRegExp(str) {
-    return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
+    return (str + "").replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }

@@ -5,12 +5,12 @@
 ![NPM](https://img.shields.io/npm/l/query-string-modifier)
 
 # Query String Modifier
-Query String Modifier is an easy and a robust way for manipulating / modifying a query string. The exposed `QueryString` class has a set of functions that modifies its local "query" string attribute, `this.queryString`, which is synced with the current window's query string by default, unless specified otherwise.
+Query String Modifier is an easy and robust way for manipulating / modifying data in a query string. The exposed `QueryString` class has a set of functions that modifies its local "query" string attribute, which is synced with the current window's query string by default, unless specified otherwise. For as little as `1.23 kB` overhead, it provides a cross-browser support for all its functions.
 
 ## Installation
 
 ```
-npm i -save query-string-modifier
+npm i --save query-string-modifier
 ```
 
 Then..
@@ -26,7 +26,11 @@ let value = qs.get("someKey");
 ...
 ```
 
-## Options
+## Terminology | What is a Query String?
+
+![URI](URI_illustration.png)
+
+## Constructor Options
 - queryString: `string`
     - Query string which all function modifies.
     - Default = current window query string.
@@ -47,10 +51,201 @@ const virtualQS = new QueryString({
 
 You can also change all of these configuration after initialization with getter and setter, as follow `getHash()`, `setHash(newValue)`, `getAutoUpdate()`... etc.
 
+## API
+```js
+import QueryString from 'query-string-modifier';
+
+// Initialize QueryString obj with default behavior
+const qs = new QueryString();
+
+```
+
+#### Getter and Setter
+```js
+/**
+ * Get the whole query string attribute of qs instance
+ * @return {String}
+ */
+qs.get()
+
+/**
+ * Set the internal attribute "this.queryString" to the given string
+ * If "autoUpdate" option is set to true, it will update the window query string
+ */
+qs.set("segment=3&search=test")
+
+/**
+ * Check whether the autoUpdate is True / False
+ * @return {boolean}
+ */
+qs.getAutoUpdate()
+
+/**
+ * Turn off the autoUpdate, so from now on, function calls
+ * on qs won't change the window query string
+ */
+qs.setAutoUpdate(false)
+```
+
+#### Param functions
+Note: all functions bellow manipulate `this.queryString` attribute of the initiated instance `qs`, and if `autoUpdate` option is set to true, it will update window URI after each operation/function.
+
+```js
+/**
+ * Get the first value of a param
+ * @return {String}
+ */
+qs.get(key)
+qs.getValue(key)       // alias
+qs.getParamValue(key)  // alias
+
+/**
+ * Get a list of all values that corresponds to the given parameter's key.
+ * @return {Array}
+ */
+qs.getValues(key)
+qs.getAllValues(key)        // alias
+qs.getAllParamValues(key)   // alias
+
+/**
+ * Replace the value of the given parameter's key.
+ * If the param key does not exist in the query string, it will append a new param.
+ * If the value is falsy (except the integer 0), it will remove the param.
+ */
+qs.set(key, value)
+qs.setParam(key, value)        // alias
+qs.updateParam(key, value)     // alias
+
+/**
+ * Append a new parameter (even if the key is already existed).
+ * If the value is falsy (except int 0), return without appending.
+ */
+qs.appendParam(key, value)
+
+/**
+ * Remove the parameter given its key and value.
+ * If value isn't given, remove all parameters corresponds to the given key.
+ *
+ * Option params:
+ * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+ */
+qs.removeParam(key, value, onlyFirstOccurrence, noEscape)
+qs.deleteParam(key, value, onlyFirstOccurrence, noEscape)   // alias
+
+/**
+ * Remove all parameters with the given key.
+ *
+ * Option params:
+ * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+ */
+qs.removeKey(key, onlyFirstOccurrence, noEscape)
+qs.deleteKey(key, onlyFirstOccurrence, noEscape)    // alias
+
+/**
+ * Check if qs has a parameter with the given key and value.
+ * If the value is not set, then check whether any parameter has the given key.
+ * @returns {boolean}
+ *
+ * Option params:
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+ */
+qs.hasParam(key, value, noEscape)
+
+/**
+ * Check if qs has a parameter with the given key.
+ * @returns {boolean}
+ *
+ * Option params:
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+ */
+qs.hasKey(key, noEscape)
+
+/**
+ * Append/Remove the parameter given its key and value.
+ */
+qs.toggleParam(key, value)
+```
+
+#### Hash functions
+
+```js
+/**
+ * Get the hash part of URI.
+ * If "autoUpdate" is true, it will update "this.hash" attribute of qs instance.
+ * @return {String}
+ */
+qs.getHash()
+
+/**
+ * Set "the.hash" of qs instance to the given hash.
+ * It ignores the '#' char at the the start, so no need to include it.
+ * If given hash is falsy (but not 0), it will remove the hash part.
+ * If "autoUpdate" is true, it will update window URI.
+ */
+qs.setHash(hashValue)
+
+/**
+ * Remove the value of "this.hash" of qs instance.
+ * If "autoUpdate" is true, it will update window URI.
+ */
+qs.removeHash()
+qs.deleteHash()    // alias
+qs.setHash('')     // alias
+```
+
+#### Window Query String functions
+
+```js
+/**
+ * Get the query string part of the current window's URI.
+ * This will update "this.queryString" and "this.hash" of the qs instance.
+ * @return {String}
+ */
+qs.getWindowQueryString()
+
+/**
+ * Force update the current window's URI using
+ * "this.queryString" and "this.hash" of the qs instance.
+ */
+qs.updateWindowQueryString()
+```
+
+#### More functions
+
+```js
+/**
+ * Get all parameters as an object where:
+ *  - { key: value } for single value params,
+ *  - { key[]: [values_array] } for list parameters (ie. key name end with [])
+ * @return {Object} Object with all parameter of this queryString
+ */
+qs.getAllParams()
+
+/**
+ * Get sorted array in ascending order of all dates from "this.queryString".
+ * @param {String} dateParamKey the parameter's key of the dates (default => "dates[]").
+ * @return {Array} sorted array of date-strings
+ */
+qs.getDateList(dateParamKey)
+```
+
 
 ## Changes history
+#### v2.7.0
+- API documentation
+- `set()` function can be used as `updateParam()` if a second parameter is passed
+- Enhance internal documentation
+- Aliases:
+    - updateWindowQueryString = updateQueryString
+    - `set(key, value)` = `updateParam(key,value)`
+
+#### v2.6.5
+- Fix bug when the parameter value or key aren't strings and need to be escaped
+
 #### v2.6.4
-- Add `hashKey()` function which is an alies to `hasParam()` with 2nd argument 'value' set to false; given a key, it checks if the string has any param with that key. The second argument is the option `noEscape`, set this to true in case the key is a regex value.
+- Add `hashKey()` function which is an alias to `hasParam()` with 2nd argument 'value' set to false; given a key, it checks if the string has any param with that key. The second argument is the option `noEscape`, set this to true in case the key is a regex value.
 - Improve matching in `hasParam()` to strictly match the key and value, so it won't return `true` in such case the value is partially matched.
     - _Example:_ given query string `...&key=value&...`, now `hasParam("key", "val")` will return `false`.
     
@@ -89,7 +284,7 @@ You can also change all of these configuration after initialization with getter 
 - Typos
 
 #### v2.1.0 
-- General enhancments
+- General enhancements
 
 #### v2.0.0 
 - Refactor all functions to one QueryString class.
