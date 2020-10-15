@@ -18,6 +18,10 @@
         "query-string",
         "query-string-modifier"
     ],
+    "files": [
+        "index.js"
+    ],
+    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
     "author": "Mahmoud Al-Refaai",
     "license": "MIT"
 }
