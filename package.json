@@ -1,6 +1,6 @@
 {
     "name": "query-string-modifier",
-    "version": "2.6.6",
+    "version": "2.7.0",
     "description": "A robust way for manipulating the URL query string!",
     "main": "index.js",
     "repository": "schuttelaar/query-string-modifier",
@@ -21,7 +21,9 @@
     "files": [
         "index.js"
     ],
-    "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/"
+    },
     "author": "Mahmoud Al-Refaai",
     "license": "MIT"
 }
