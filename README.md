@@ -10,7 +10,7 @@ Query String Modifier is an easy and robust way for manipulating / modifying dat
 ## Installation
 
 ```
-npm i -save query-string-modifier
+npm i --save query-string-modifier
 ```
 
 Then..
@@ -81,7 +81,8 @@ qs.set("segment=3&search=test")
 qs.getAutoUpdate()
 
 /**
- * Turn off the autoUpdate, so from now on, function calls on qs won't change the window query string
+ * Turn off the autoUpdate, so from now on, function calls
+ * on qs won't change the window query string
  */
 qs.setAutoUpdate(false)
 ```
@@ -126,8 +127,8 @@ qs.appendParam(key, value)
  * If value isn't given, remove all parameters corresponds to the given key.
  *
  * Option params:
- * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
- * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+ * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
 qs.removeParam(key, value, onlyFirstOccurrence, noEscape)
 qs.deleteParam(key, value, onlyFirstOccurrence, noEscape)   // alias
@@ -136,8 +137,8 @@ qs.deleteParam(key, value, onlyFirstOccurrence, noEscape)   // alias
  * Remove all parameters with the given key.
  *
  * Option params:
- * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
- * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+ * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
 qs.removeKey(key, onlyFirstOccurrence, noEscape)
 qs.deleteKey(key, onlyFirstOccurrence, noEscape)    // alias
@@ -145,19 +146,19 @@ qs.deleteKey(key, onlyFirstOccurrence, noEscape)    // alias
 /**
  * Check if qs has a parameter with the given key and value.
  * If the value is not set, then check whether any parameter has the given key.
- * @returns {Bool}
+ * @returns {boolean}
  *
  * Option params:
- * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
 qs.hasParam(key, value, noEscape)
 
 /**
  * Check if qs has a parameter with the given key.
- * @returns {Bool}
+ * @returns {boolean}
  *
  * Option params:
- * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+ * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
 qs.hasKey(key, noEscape)
 
@@ -235,7 +236,6 @@ qs.getDateList(dateParamKey)
 #### v2.7.0
 - API documentation
 - `set()` function can be used as `updateParam()` if a second parameter is passed
-- link to Github packages
 - Enhance internal documentation
 - Aliases:
     - updateWindowQueryString = updateQueryString

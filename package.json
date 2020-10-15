@@ -21,9 +21,6 @@
     "files": [
         "index.js"
     ],
-    "publishConfig": {
-        "registry": "https://npm.pkg.github.com/"
-    },
     "author": "Mahmoud Al-Refaai",
     "license": "MIT"
 }

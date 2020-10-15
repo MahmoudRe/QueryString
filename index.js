@@ -1,5 +1,5 @@
 /**
- * @version 2.7.0
+ * @version 2.7.1
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -10,7 +10,7 @@ export default class QueryString {
      * Optionally, a custom queryString and hash can be given als parameter.
      * @param {String} queryString  Custom query string to be used. Default is the query string of current URI will be used (without the hash)
      * @param {String} hash         Custom hash. Default is the hash of current URI will be used
-     * @param {bool}   autoUpdate   update the current window's URI after each modification. This set to true by default
+     * @param {boolean}   autoUpdate   update the current window's URI after each modification. This set to true by default
      */
     constructor({ queryString, hash, autoUpdate } = {}) {
 
@@ -54,8 +54,8 @@ export default class QueryString {
     getAutoUpdate() {
         return this.autoUpdate;
     }
-    setAutoUpdate(bool) {
-        this.autoUpdate = bool;
+    setAutoUpdate(boolean) {
+        this.autoUpdate = boolean;
     }
 
     // --------------- [QueryString functions] --------------- //
@@ -218,8 +218,8 @@ export default class QueryString {
      * If value isn't given, remove all parameters wut the given key.
      * @param {String} key
      * @param {String} value (optional)
-     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+     * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
      * @return {String} this.queryString after modification
      */
     removeParam(key, value, onlyFirstOccurrence, noEscape) {
@@ -250,8 +250,8 @@ export default class QueryString {
     /**
      * Remove any parameter with the given key from "this.queryString".
      * @param {String} key
-     * @param {Bool} onlyFirstOccurrence set to true, to remove only the first occurrence
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key
+     * @param {boolean} onlyFirstOccurrence set to true, to remove only the first occurrence
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
      * @return {String} this.queryString after modification
      */
     removeKey(key, onlyFirstOccurrence, noEscape) {
@@ -281,8 +281,8 @@ export default class QueryString {
      *
      * @param {String} key
      * @param {String} value (optional)
-     * @param {Bool} noEscape set to true if you need to pass regex expression as a key
-     * @returns {Bool} bool wether this.queryString has the given parameter
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+     * @returns {boolean} boolean wether this.queryString has the given parameter
      */
     hasParam(key, value, noEscape) {
         if (!key) return false;
