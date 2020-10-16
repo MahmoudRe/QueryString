@@ -37,10 +37,10 @@ let value = qs.get("someKey");
 - hash: `string`
     - Default = current window hash
 - autoUpdate: `true | false`
-    - Update the current window's URL after each modification
+    - Update the current window's URI after each modification
     - Default = true
 
-Using option to create a virtual query string, which can be used in Ajax calls, but it won't modify or change current window URL.
+Using option to create a virtual query string, which can be used in Ajax calls, but it won't modify or change current window URI.
 ```js 
 const virtualQS = new QueryString({ 
             queryString: "myCustom=String&key=value", 
@@ -172,16 +172,16 @@ qs.toggleParam(key, value)
 
 ```js
 /**
- * Get the hash part of URI.
+ * Get the hash part of current window URI.
  * If "autoUpdate" is true, it will update "this.hash" attribute of qs instance.
  * @return {String}
  */
 qs.getHash()
 
 /**
- * Set "the.hash" of qs instance to the given hash.
+ * Set "this.hash" of qs instance to the given hash.
  * It ignores the '#' char at the the start, so no need to include it.
- * If given hash is falsy (but not 0), it will remove the hash part.
+ * If the given hash is falsy (but not 0), it will remove the hash part.
  * If "autoUpdate" is true, it will update window URI.
  */
 qs.setHash(hashValue)
