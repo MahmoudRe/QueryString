@@ -105,9 +105,9 @@ export default class QueryString {
 
             if (param[0].slice(-2) === "[]") {
                 if (!paramsObj[param[0]]) paramsObj[param[0]] = [];
-                paramsObj[param[0]].push(param[1]);
+                paramsObj[param[0]].push(decodeURI(param[1]));
             } else {
-                paramsObj[param[0]] = param[1];
+                paramsObj[param[0]] = decodeURI(param[1]);
             }
         });
         return paramsObj;
