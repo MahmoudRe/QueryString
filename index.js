@@ -1,5 +1,5 @@
 /**
- * @version 2.8.4
+ * @version 2.8.6
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -87,7 +87,7 @@ export default class QueryString {
 
         let updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
 
-        if (this.routeValues.length)
+        if (!this.routeValues.length)
             updatedURI = this.origin + '?' + this.queryString + hash;
 
         window.history.replaceState({}, document.title, updatedURI);
@@ -391,7 +391,7 @@ export default class QueryString {
         if (i < 0) i += this.routeValues.length;
 
         // if given value is empty, return without modifying the route
-        if (value == '') return this.routeValues.join('/');
+        if (!value) return this.routeValues.join('/');
 
         this.routeValues[i] = value;
 
