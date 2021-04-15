@@ -1,5 +1,5 @@
 /**
- * @version 2.8.2
+ * @version 2.8.4
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -396,7 +396,7 @@ export default class QueryString {
         this.routeValues[i] = value;
 
         if (this.autoUpdate)
-            updateWindowURI();
+            this.updateWindowURI();
 
         return this.routeValues.join('/');
     }
@@ -416,7 +416,7 @@ export default class QueryString {
         this.routeValues.splice(i, 1);
 
         if (this.autoUpdate)
-            updateWindowURI();
+            this.updateWindowURI();
 
         return this.routeValues.join('/');
     }
