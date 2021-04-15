@@ -84,7 +84,12 @@ export default class QueryString {
      */
     updateWindowURI() {
         let hash = this.hash ? "#" + this.hash : "";
-        let updatedURI = this.origin + this.routeValues.join('/') + '?' + this.queryString + hash;
+
+        if (this.routeValues.length)
+            let updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
+        else
+            let updatedURI = this.origin + '?' + this.queryString + hash;
+
         window.history.replaceState({}, document.title, updatedURI);
 
         return updatedURI;
