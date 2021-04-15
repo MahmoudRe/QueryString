@@ -85,7 +85,7 @@ export default class QueryString {
     updateWindowURI() {
         const hash = this.hash ? "#" + this.hash : "";
 
-        const updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
+        let updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
 
         if (this.routeValues.length)
             updatedURI = this.origin + '?' + this.queryString + hash;
