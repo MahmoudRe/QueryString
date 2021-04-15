@@ -1,23 +1,29 @@
 /**
- * @version 2.7.1
+ * @version 2.8.6
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
 export default class QueryString {
 
     /**
-     * By default, this constructor takes no parameters and set its queryString directly from URI.
-     * Optionally, a custom queryString and hash can be given als parameter.
-     * @param {String} queryString  Custom query string to be used. Default is the query string of current URI will be used (without the hash)
-     * @param {String} hash         Custom hash. Default is the hash of current URI will be used
-     * @param {boolean}   autoUpdate   update the current window's URI after each modification. This set to true by default
+     * Constrict a new instance of QueryString, which set-up the internal values directly from current window URI.
+     * Optionally, a custom queryString, origin, route and hash can be given in option/config parameter.
+     * @param {String} queryString  Custom query string to be used. By default, the query string of current window is used (without the hash).
+     * @param {String} hash         Custom hash. By default, the hash of the current window is used.
+     * @param {boolean} origin      Custom origin. By default, the origin of the current window is used.
+     * @param {boolean} route       Custom route/pathname. By default, the pathname of the current window is used.
+     * @param {boolean} autoUpdate   Keep the current window's URI in sync with all modifications. [Default=`true`].
      */
-    constructor({ queryString, hash, autoUpdate } = {}) {
+    constructor({ queryString, hash, origin, route, autoUpdate } = {}) {
 
         // attr
         this.queryString = queryString ? queryString : this.getWindowQueryString();
         this.autoUpdate = autoUpdate ? autoUpdate : true;
         this.hash = window.location.hash.substr(1);
+        this.origin = origin ? origin : window.location.origin;
+        this.routeValues = route ?
+            route.replace(/^\/+/g, '').split('/') :
+            window.location.pathname.replace(/^\/+/g, '').split('/')
 
         if (hash) this.setHash(hash);
         this.autoUpdate && queryString && this.set(queryString);
@@ -49,7 +55,7 @@ export default class QueryString {
         else
             this.queryString = string;
 
-        if (this.autoUpdate) this.updateQueryString();
+        if (this.autoUpdate) this.updateWindowURI();
     }
     getAutoUpdate() {
         return this.autoUpdate;
@@ -72,23 +78,24 @@ export default class QueryString {
     }
 
     /**
-     * Force update the current window's URI using
-     * "this.queryString" and "this.hash" of this instance.
+     * Silent update the current window's URI without reload
+     * using the origin, route, queryString and hash of this instance.
+     * @return the updated URI string
      */
-    updateQueryString() {
-        let url = window.location.href;
-        let urlParts = url.split('?');
+    updateWindowURI() {
+        const hash = this.hash ? "#" + this.hash : "";
 
-        if (urlParts.length > 0) {
-            let urlHash = this.hash ? "#" + this.hash : "";
-            let updatedURL = urlParts[0] + '?' + this.queryString + urlHash;
-            window.history.replaceState({}, document.title, updatedURL);
-            return true;
-        } else {
-            return false;
-        }
+        let updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
+
+        if (!this.routeValues.length)
+            updatedURI = this.origin + '?' + this.queryString + hash;
+
+        window.history.replaceState({}, document.title, updatedURI);
+
+        return updatedURI;
     }
-    updateWindowQueryString() { this.updateQueryString(); }
+    updateWindowQueryString() { this.updateWindowURI(); }
+    updateQueryString() { this.updateWindowURI(); }
 
     // ---------------[Param functions]--------------- //
     /**
@@ -105,9 +112,9 @@ export default class QueryString {
 
             if (param[0].slice(-2) === "[]") {
                 if (!paramsObj[param[0]]) paramsObj[param[0]] = [];
-                paramsObj[param[0]].push(param[1]);
+                paramsObj[param[0]].push(decodeURI(param[1]));
             } else {
-                paramsObj[param[0]] = param[1];
+                paramsObj[param[0]] = decodeURI(param[1]);
             }
         });
         return paramsObj;
@@ -190,7 +197,7 @@ export default class QueryString {
             this.queryString += prefix + key + '=' + value;
         }
 
-        if (this.autoUpdate) this.updateQueryString();
+        if (this.autoUpdate) this.updateWindowURI();
         return this.queryString;
     }
     setParam(key, value) { this.updateParam(key, value); }
@@ -209,7 +216,7 @@ export default class QueryString {
         let prefix = !this.queryString.length ? '' : '&';
         this.queryString += prefix + key + '=' + value;
 
-        if (this.autoUpdate) this.updateQueryString();
+        if (this.autoUpdate) this.updateWindowURI();
         return this.queryString;
     }
 
@@ -239,7 +246,7 @@ export default class QueryString {
             return this.removeParam(key);
 
         if (this.autoUpdate)
-            this.updateQueryString();
+            this.updateWindowURI();
 
         return this.queryString;
     }
@@ -267,7 +274,7 @@ export default class QueryString {
             return this.removeKey(key);
 
         if (this.autoUpdate)
-            this.updateQueryString();
+            this.updateWindowURI();
 
         return this.queryString;
     }
@@ -340,7 +347,7 @@ export default class QueryString {
             this.hash = hash;
 
         if (this.autoUpdate)
-            this.updateQueryString();
+            this.updateWindowURI();
     }
 
     /**
@@ -354,6 +361,66 @@ export default class QueryString {
      * If "autoUpdate" is true, it will update window URI.
      */
     deleteHash() { this.setHash(''); }
+
+
+    // -------------------- [ Modify Routes ] -------------------- //
+
+    /**
+     * Get the route value at specific index.
+     * The index can be negative, where "-1" is the last value.
+     * @param {int} index positive or negative number, where "-1" is the last value. 
+     * @returns {String} value of route token
+     */
+    getRouteAtIndex(i) {
+        // accept negative index, where -1 is last element
+        if (i < 0) i += this.routeValues.length;
+        return this.routeValues.length > i ? this.routeValues[i] : undefined
+    }
+
+    /**
+     * Update the route value at specific index.
+     * The index can be negative, where "-1" is the last value.
+     * If given value is empty, return without modifying the route
+     * If "autoUpdate" is true, it will update window URI.
+     * @param {int} index positive or negative number, where "-1" is the last value. 
+     * @param {String} value the new value of the route at the given index. If empty, no modification will happen.
+     * @returns {String} the updated route string
+     */
+    updateRouteAtIndex(i, value) {
+        // accept negative index, where -1 is last element
+        if (i < 0) i += this.routeValues.length;
+
+        // if given value is empty, return without modifying the route
+        if (!value) return this.routeValues.join('/');
+
+        this.routeValues[i] = value;
+
+        if (this.autoUpdate)
+            this.updateWindowURI();
+
+        return this.routeValues.join('/');
+    }
+    setRouteAtIndex(i, value) { this.updateRouteAtIndex(i, value); }
+
+    /**
+     * Delete the route value at specific index.
+     * The index can be negative, where "-1" is the last value.
+     * If "autoUpdate" is true, it will update window URI.
+     * @param {int} index positive or negative number, where "-1" is the last value. 
+     * @returns {String} the updated route string
+     */
+    removeRouteAtIndex(i) {
+        // accept negative index, where -1 is last element
+        if (i < 0) i += this.routeValues.length;
+
+        this.routeValues.splice(i, 1);
+
+        if (this.autoUpdate)
+            this.updateWindowURI();
+
+        return this.routeValues.join('/');
+    }
+    deleteRouteAtIndex(i) { this.removeRouteAtIndex(i); }
 
 }
 
