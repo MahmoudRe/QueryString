@@ -36,6 +36,10 @@ let value = qs.get("someKey");
     - Default = current window query string.
 - hash: `string`
     - Default = current window hash
+- origin: `string`
+    - Default = current window origin
+- route: `string`
+    - Default = current window route
 - autoUpdate: `true | false`
     - Update the current window's URI after each modification
     - Default = true
@@ -195,6 +199,39 @@ qs.deleteHash()    // alias
 qs.setHash('')     // alias
 ```
 
+#### Route functions
+
+```js
+/**
+ * Get the route value at specific index.
+ * This funstion accpet a negative index, where "-1" is the last value.
+ * @param {int} index positive or negative number, where "-1" is the last value. 
+ * @returns {String} value of route token
+ */
+getRouteAtIndex(index) {
+
+/**
+ * Update the route value at specific index.
+ * The index can be negative, where "-1" is the last value.
+ * If given value is empty, return without modifying the route
+ * If "autoUpdate" is true, it will update window URI.
+ * @param {int} index positive or negative number, where "-1" is the last value. 
+ * @param {String} value the new value of the route at the given index. If empty, no modification will happen.
+ * @returns {String} the updated route string
+ */
+updateRouteAtIndex(index, value) 
+setRouteAtIndex(index, value)   // alias
+
+/**
+ * Delete the route value at specific index.
+ * The index can be negative, where "-1" is the last value.
+ * If "autoUpdate" is true, it will update window URI.
+ * @param {int} index positive or negative number, where "-1" is the last value. 
+ * @returns {String} the updated route string
+ */
+removeRouteAtIndex(index)
+deleteRouteAtIndex(index) // alias
+```
 #### Window Query String functions
 
 ```js
@@ -206,10 +243,13 @@ qs.setHash('')     // alias
 qs.getWindowQueryString()
 
 /**
- * Force update the current window's URI using
- * "this.queryString" and "this.hash" of the qs instance.
+ * Silent update the current window's URI without reload
+ * using the origin, route, queryString and hash of this instance.
+ * @return the updated URI string
  */
-qs.updateWindowQueryString()
+qs.updateWindowURI()
+qs.updateQueryString()          //alias
+qs.updateWindowQueryString()    //alias
 ```
 
 #### More functions
@@ -233,6 +273,17 @@ qs.getDateList(dateParamKey)
 
 
 ## Changes history
+
+#### v2.8.0
+- Support modifing routes value using index:
+    - `getRouteAtIndex(index)`
+    - `setRouteAtIndex(index, value)` = `updateRouteAtIndex(index, value)`
+    - `removeRouteAtIndex(index)` = `deleteRouteAtIndex(index)`
+- Manage the state of the whole URI string, including origin and route/pathname locally, such that making virtual instance (ie, `autoUpdate = false`) won't effect current window URI.
+- Add `origin` and `route` to constructor options/config
+- Add API documentation for new functions
+- Aliases:
+    - updateWindowURI = updateWindowQueryString = updateQueryString
 #### v2.7.0
 - API documentation
 - `set()` function can be used as `updateParam()` if a second parameter is passed
