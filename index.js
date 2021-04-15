@@ -1,5 +1,5 @@
 /**
- * @version 2.8.0
+ * @version 2.8.1
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -83,12 +83,12 @@ export default class QueryString {
      * @return the updated URI string
      */
     updateWindowURI() {
-        let hash = this.hash ? "#" + this.hash : "";
+        const hash = this.hash ? "#" + this.hash : "";
+
+        const updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
 
         if (this.routeValues.length)
-            let updatedURI = this.origin + '/' + this.routeValues.join('/') + '?' + this.queryString + hash;
-        else
-            let updatedURI = this.origin + '?' + this.queryString + hash;
+            updatedURI = this.origin + '?' + this.queryString + hash;
 
         window.history.replaceState({}, document.title, updatedURI);
 
