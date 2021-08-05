@@ -99,31 +99,32 @@ Note: all functions bellow manipulate `this.queryString` attribute of the initia
  * Get the first value of a param
  * @return {String}
  */
-qs.get(key)
-qs.getValue(key)       // alias
-qs.getParamValue(key)  // alias
+qs.get(key)             // alias
+qs.getValue(key)        // alias
+qs.getParamValue(key)  
 
 /**
  * Get a list of all values that corresponds to the given parameter's key.
  * @return {Array}
  */
-qs.getValues(key)
+qs.getValues(key)           // alias
 qs.getAllValues(key)        // alias
-qs.getAllParamValues(key)   // alias
+qs.getAllParamValues(key)   
 
 /**
  * Replace the value of the given parameter's key.
  * If the param key does not exist in the query string, it will append a new param.
  * If the value is falsy (except the integer 0), it will remove the param.
  */
-qs.set(key, value)
+qs.set(key, value)             // alias
 qs.setParam(key, value)        // alias
-qs.updateParam(key, value)     // alias
+qs.updateParam(key, value)     
 
 /**
  * Append a new parameter (even if the key is already existed).
  * If the value is falsy (except int 0), return without appending.
  */
+qs.append(key, value)           //alias
 qs.appendParam(key, value)
 
 /**
@@ -155,6 +156,7 @@ qs.deleteKey(key, onlyFirstOccurrence, noEscape)    // alias
  * Option params:
  * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
+qs.has(key, value, noEscape)        // alias
 qs.hasParam(key, value, noEscape)
 
 /**
@@ -164,6 +166,7 @@ qs.hasParam(key, value, noEscape)
  * Option params:
  * @param {boolean} noEscape set to true if you need to pass regex expression as a key
  */
+qs.has(key)                 // alias
 qs.hasKey(key, noEscape)
 
 /**
@@ -274,6 +277,11 @@ qs.getDateList(dateParamKey)
 
 ## Changes history
 
+#### v2.8.7
+- Fix bug on function `hasKey()` where no value was returned.
+- alias: 
+    - `has(key, value, noEscape)` = `hasParam(key, value, noEscape)`
+    - `append(key, value)` = `appendParam(key, value)`
 #### v2.8.0
 - Support modifing routes value using index:
     - `getRouteAtIndex(index)`
