@@ -128,7 +128,7 @@ export default class QueryString {
      */
     getAllParams() {
         let paramsObj = {};
-        this.queryString.split('&').forEach(e => {
+        this.queryString && this.queryString.split('&').forEach(e => {
             let param = e.split('=');
             param[0] = decodeURI(param[0]);
 
@@ -148,7 +148,7 @@ export default class QueryString {
      * @return {String} the first value of the parameter.
      */
     getParamValue(key) {
-        let paramList = this.queryString.split('&');
+        let paramList = this.queryString ? this.queryString.split('&') : [];
         for (let i = 0; i < paramList.length; i++) {
             let param = paramList[i].split('=');
             if (decodeURI(param[0]) == key) {
@@ -167,7 +167,7 @@ export default class QueryString {
      * @return {Array} list of all values of the given key.
      */
     getAllParamValues(key) {
-        let paramList = this.queryString.split('&');
+        let paramList = this.queryString ? this.queryString.split('&') : [];
         let valueList = [];
         for (let i = 0; i < paramList.length; i++) {
             let param = paramList[i].split('=');
