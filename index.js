@@ -1,5 +1,5 @@
 /**
- * @version 2.8.6
+ * @version 2.8.7
  * @author Mahmoud Al-Refaai <Schuttelaar & Partners>
  */
 
@@ -8,13 +8,16 @@ export default class QueryString {
     /**
      * Constrict a new instance of QueryString, which set-up the internal values directly from current window URI.
      * Optionally, a custom queryString, origin, route and hash can be given in option/config parameter.
-     * @param {String} queryString  Custom query string to be used. By default, the query string of current window is used (without the hash).
-     * @param {String} hash         Custom hash. By default, the hash of the current window is used.
-     * @param {boolean} origin      Custom origin. By default, the origin of the current window is used.
-     * @param {boolean} route       Custom route/pathname. By default, the pathname of the current window is used.
-     * @param {boolean} autoUpdate   Keep the current window's URI in sync with all modifications. [Default=`true`].
+     * @param {Object} [config]
+     * @param {String} [config.queryString]  Custom query string to be used. By default, the query string of current window is used (without the hash).
+     * @param {String} [config.hash]         Custom hash. By default, the hash of the current window is used.
+     * @param {String} [config.origin]       Custom origin. By default, the origin of the current window is used.
+     * @param {String} [config.route]        Custom route/pathname. By default, the pathname of the current window is used.
+     * @param {true} [config.autoUpdate]     Keep the current window's URI in sync with all modifications. [Default=`true`].
+     * @constructs
      */
-    constructor({ queryString, hash, origin, route, autoUpdate } = {}) {
+    constructor(config = {}) {
+        let { queryString, hash, origin, route, autoUpdate } = config;
 
         // attr
         this.queryString = queryString ? queryString : this.getWindowQueryString();
@@ -37,14 +40,23 @@ export default class QueryString {
 
     // ------------------ [Getters and Setters] ------------------ //
     /**
-     * By default, return this.queryString attribute.
-     * If the key is given, then return the first value of this key.
+     * If the `key` is given, return the first value of the param of that key.
+     * Otherwise, return the whole query string.
      * @param {String} key (optional)
+     * @return {String} the whole query string or the first value (if `key` is given).
      */
     get(key) {
         if (key) return this.getParamValue(key);
         return this.queryString;
     }
+
+    /**
+     * Set the internal attribute this.queryString to the given string.
+     * If a second argument is passed, then this behave as @alias updateParam where first argument is treated as key.
+     * If `autoUpdate` option is set to true, it will update the window query string.
+     * @param {String} str
+     * @param {String} [value] optional - if this is passed, the function behave as alias to updateParam()
+     */
     set(string, value) {
         if (value !== undefined)
             return this.updateParam(string, value);
@@ -57,9 +69,19 @@ export default class QueryString {
 
         if (this.autoUpdate) this.updateWindowURI();
     }
+
+    /**
+     * Get the boolean value of autoUpdate
+     * @return {boolean}
+     */
     getAutoUpdate() {
         return this.autoUpdate;
     }
+
+    /**
+     * Set the boolean value of autoUpdate
+     * @param {boolean} boolean
+     */
     setAutoUpdate(boolean) {
         this.autoUpdate = boolean;
     }
@@ -80,7 +102,7 @@ export default class QueryString {
     /**
      * Silent update the current window's URI without reload
      * using the origin, route, queryString and hash of this instance.
-     * @return the updated URI string
+     * @return {string} the updated URI string
      */
     updateWindowURI() {
         const hash = this.hash ? "#" + this.hash : "";
@@ -94,8 +116,8 @@ export default class QueryString {
 
         return updatedURI;
     }
-    updateWindowQueryString() { this.updateWindowURI(); }
-    updateQueryString() { this.updateWindowURI(); }
+    updateWindowQueryString() { return this.updateWindowURI(); }
+    updateQueryString() { return this.updateWindowURI(); }
 
     // ---------------[Param functions]--------------- //
     /**
@@ -106,7 +128,7 @@ export default class QueryString {
      */
     getAllParams() {
         let paramsObj = {};
-        this.queryString.split('&').forEach(e => {
+        this.queryString && this.queryString.split('&').forEach(e => {
             let param = e.split('=');
             param[0] = decodeURI(param[0]);
 
@@ -126,7 +148,7 @@ export default class QueryString {
      * @return {String} the first value of the parameter.
      */
     getParamValue(key) {
-        let paramList = this.queryString.split('&');
+        let paramList = this.queryString ? this.queryString.split('&') : [];
         for (let i = 0; i < paramList.length; i++) {
             let param = paramList[i].split('=');
             if (decodeURI(param[0]) == key) {
@@ -135,7 +157,9 @@ export default class QueryString {
         }
         return '';
     }
-    getValue(key) { this.getParamValue(key); }
+
+    /** @alias getParamValue */
+    getValue(key) { return this.getParamValue(key); }
 
     /**
      * Get a list of all values that corresponds to the given parameter's key.
@@ -143,7 +167,7 @@ export default class QueryString {
      * @return {Array} list of all values of the given key.
      */
     getAllParamValues(key) {
-        let paramList = this.queryString.split('&');
+        let paramList = this.queryString ? this.queryString.split('&') : [];
         let valueList = [];
         for (let i = 0; i < paramList.length; i++) {
             let param = paramList[i].split('=');
@@ -154,7 +178,11 @@ export default class QueryString {
         }
         return valueList;
     }
+
+    /** @alias getAllParamValues */
     getAllValues(key) { return this.getAllParamValues(key); }
+
+    /** @alias getAllParamValues */
     getValues(key) { return this.getAllParamValues(key); }
 
     /**
@@ -200,7 +228,9 @@ export default class QueryString {
         if (this.autoUpdate) this.updateWindowURI();
         return this.queryString;
     }
-    setParam(key, value) { this.updateParam(key, value); }
+
+    /** @alias updateParam */
+    setParam(key, value) { return this.updateParam(key, value); }
 
     /**
      * Append a new parameter to "this.queryString" (even if the key is already existed).
@@ -219,6 +249,9 @@ export default class QueryString {
         if (this.autoUpdate) this.updateWindowURI();
         return this.queryString;
     }
+
+    /** @alias appendParam */
+    append(key, value) { return appendParam(key, value); }
 
     /**
      * Remove the given query parameter [ KEY=VALUE ] from "this.queryString".
@@ -250,8 +283,10 @@ export default class QueryString {
 
         return this.queryString;
     }
+
+    /** @alias removeParam */
     deleteParam(key, value, onlyFirstOccurrence, noEscape) {
-        this.removeParam(key, value, onlyFirstOccurrence, noEscape);
+        return this.removeParam(key, value, onlyFirstOccurrence, noEscape);
     }
 
     /**
@@ -278,8 +313,10 @@ export default class QueryString {
 
         return this.queryString;
     }
+
+    /** @alias removeKey */
     deleteKey(key, onlyFirstOccurrence, noEscape) {
-        this.removeKey(key, onlyFirstOccurrence, noEscape);
+        return this.removeKey(key, onlyFirstOccurrence, noEscape);
     }
 
     /**
@@ -303,7 +340,18 @@ export default class QueryString {
         let regex = new RegExp(`(&)?(${key}=${value})($|&)`, `g`);
         return this.queryString.match(regex);
     }
-    hasKey(key, noEscape) { this.hasParam(key, false, noEscape); }
+
+    /** @alias hasParam */
+    has(key, value, noEscape) { return this.hasParam(key, value, noEscape); }
+
+    /**
+     * Check if there is any parameter with the given key.
+     *
+     * @param {String} key
+     * @param {boolean} noEscape set to true if you need to pass regex expression as a key
+     * @returns {boolean} boolean value whether this.queryString has the a parameter with the given key
+     */
+    hasKey(key, noEscape) { return this.hasParam(key, false, noEscape); }
 
     /**
      * Append/Remove the given parameter from "this.queryString".
@@ -356,10 +404,7 @@ export default class QueryString {
      */
     removeHash() { this.setHash(''); }
 
-    /**
-     * Remove the value of "this.hash" of qs instance.
-     * If "autoUpdate" is true, it will update window URI.
-     */
+    /** @alias removeHash */
     deleteHash() { this.setHash(''); }
 
 
@@ -400,7 +445,9 @@ export default class QueryString {
 
         return this.routeValues.join('/');
     }
-    setRouteAtIndex(i, value) { this.updateRouteAtIndex(i, value); }
+
+    /** @alias setRouteAtIndex */
+    setRouteAtIndex(i, value) { return this.updateRouteAtIndex(i, value); }
 
     /**
      * Delete the route value at specific index.
@@ -420,7 +467,9 @@ export default class QueryString {
 
         return this.routeValues.join('/');
     }
-    deleteRouteAtIndex(i) { this.removeRouteAtIndex(i); }
+
+    /** @alias removeRouteAtIndex */
+    deleteRouteAtIndex(i) { return this.removeRouteAtIndex(i); }
 
 }
 
